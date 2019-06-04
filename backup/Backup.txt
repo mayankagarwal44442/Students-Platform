@@ -1,0 +1,163 @@
+		<?php
+			session_start();
+			if(!isset($_SESSION["uname"])){
+				echo "Sorry, Please login and use this page";
+				exit;
+				}
+			
+			extract($_POST);
+
+
+			$db = mysqli_connect("localhost:3306","root","","student_platform");
+
+			#echo $_SESSION["uname"];
+			if (is_numeric($_POST['Submitter']))
+			{
+				$stmt="select Reminders from student where SSN=\"".$_SESSION["uname"]."\";";		//sql query
+		   
+			    $res = mysqli_query($db,$stmt);				//query object
+			    $string=" ";
+			    $brflag=0;
+			    if($res && mysqli_num_rows($res)==1)				//atleast one row and only one row
+			        {
+			            while($arr=mysqli_fetch_assoc($res))	
+			            {	
+			                for ($i=0;$i<strlen($arr['Reminders']);$i++)
+			                {
+			                	if ($arr['Reminders'][i]==$_SESSION['Submitter'])
+			                	{
+			                		for ($j=i;$j<(strlen($arr['Reminders'])-1);$j++)
+			                		{
+			                			if ((is_numeric($arr['Reminders'][j])&&$arr['Reminders'][j+1]=="."))
+			                			{
+			                				$temp=join('',(string)$arr['Reminders']);
+			                				$string=" ";
+			                				$brflag=1;
+			                			}
+			                			break;
+			                		}
+			                		if (brflag==1)
+			                		{
+			                			break;
+			                		}
+			                	}
+			                	if (brflag==1)
+			                		{
+			                			break;
+			                		}
+			                }
+			                /*
+			                $stmt1="insert into 'student'(Reminders) values (".$string.")";
+			                $res1 = mysqli_query($db,$stmt1);	
+			                if($res1 && mysqli_num_rows($res1)==1)				//atleast one row and only one row
+					        {
+					            while($arr1=mysqli_fetch_assoc($res1))	
+					            {	
+					                echo "<script type='text/javascript'>
+					                		var list = document.getElementsByClassName('form-group'); 
+											list.removeChild(list.childNodes[0]);
+											list.removeChild(list.childNodes[0]);
+					                		var x=document.querySelector('#test');
+					                		x.innerHTML="."\"".$arr1['Reminders']."\"".";
+					                	</script>";
+					            }
+					         }
+ */
+
+			            }
+			         }
+			         if (isset($_POST['tster']))
+			         {
+			         	
+			         }
+				}
+		
+
+
+
+		<!--tr.innerHTML=`<tr><th>".$row1['Course_ID']."</th><th>".$row2['Attendance']."</th><th>".$row['Teacher_Initials']."</th><th>".$row3['No_Of_Classes']."</th></tr>`;x.appendChild(t)</script>";-->
+
+
+
+
+		var s=`
+                    <tr>
+                        <th>".$arr['NAME']."</th>
+                        <th>".$arr['SGPA']."</th>
+                        <th>".$arr['Mobile_Number']."</th>
+                      </tr>
+
+
+
+
+
+
+                  echo "<script type='text/javascript'>
+                    var d=document.querySelector('.My-Table');
+                    var t1=d.insertRow(1);
+                    var c11=t.insertCell(0);
+                    var c21=t.insertCell(1);
+                    var c31=t.insertCell(2);
+                    c11.innerHTML='NAME';
+                    c21.innerHTML='SGPA';
+                    c31.innerHTML='PHONE NUMBER';
+                </script>";
+
+
+
+                SELECT DISTINCT stud.SSN,stud.NAME,exam_department.Course_ID,exam_department.ISA_1_Marks FROM student stud WHERE stud.SSN IN (SELECT SSN FROM exam_department WHERE Course_ID="UE17CS253")
+
+
+
+
+
+15 Simple Queries (Integrated With Backend)
+
+Simple:
+
+COE:
+"SELECT Course_id FROM Course"
+"SELECT DISTINCT Semester FROM Student"
+"SELECT DISTINCT Section FROM Student"
+"SELECT  COURSE_ID, ISA_1_Marks, ISA_2_Marks, ESA_Marks, Scaling, SGPA, CGPA FROM exam_department where SSN='".$arr[0]."' and Course_ID='".trim($arr[2])."'
+
+Student:
+@Reminders:
+	+Selecting
+	select Reminders from student where SSN=\"".$_SESSION["uname"]."\";
+	+Updating/Setting Reminders
+	$stmt3="update student set Reminders=\"".$string."\"where SSN=\"".$_SESSION['uname']."\"";
+	+Deleting Reminders
+	$stmt4="update student set Reminders=\"".$temp."\"where SSN=\"".$_SESSION['uname']."\"";
+
+@Attendance(Self Explanatory)
+	+SELECT Course_ID FROM attendance where SSN=\"".$_SESSION['uname']."\";
+	+SELECT Attendance FROM attendance where SSN=\"".$_SESSION['uname']."\";
+	+SELECT Teacher_Initials FROM attendance where SSN=\"".$_SESSION['uname']."\";
+	+SELECT No_Of_Classes FROM attendance where SSN=\"".$_SESSION['uname']."\";
+
+@Results
+	+SELECT Course_ID FROM exam_department where SSN=\"".$_SESSION['uname']."\";
+	+SELECT ISA_1_Marks FROM exam_department where SSN=\"".$_SESSION['uname']."\";
+	+SELECT ISA_2_Marks FROM exam_department where SSN=\"".$_SESSION['uname']."\";
+	+SELECT SGPA FROM exam_department where SSN=\"".$_SESSION['uname']."\";
+
+1 Medium Level Query (Integrated With Backend)
+
+Medium:
+@Profiler/Toppers PAge
+	+Merging of three tables (student,exam_department,phone_number) and checking whether CGPA>=9
+	SELECT DISTINCT stud.SSN,stud.NAME,exam_department.CGPA,phone_number.Mobile_Number FROM student stud INNER JOIN exam_department ON stud.SSN=exam_department.SSN INNER JOIN phone_number ON stud.SSN=phone_number.SSN where exam_department.CGPA>=9
+
+
+
+3 Complex Queries
+
+Complex:
+"SELECT DISTINCT SSN, Name FROM Student WHERE SSN in (SELECT s.SSN  FROM Student as s, course_taken as ct, course as c  WHERE s.SEMESTER= '".$_POST['semester']."' and s.Section = '". $_POST['section']."' and s.SSN=ct.SSn and c.course_id = '".$_POST['course']."' and c.course_id = ct.course_id)";
+
+@Selecting Students with SRN Greater than some number for Placement offers
+	+SELECT NAME FROM student where SSN in( SELECT SSN FROM exam_department where CGPA>8.5)
+
+@Selecting Students with attendance less than 75%
+	+SELECT DISTINCT NAME FROM student WHERE SSN IN ( SELECT SSN FROM attendance as A where A.Attendance<75)
